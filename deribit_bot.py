@@ -4,8 +4,8 @@
 ║        Bitcoin Futures Bot — Deribit Edition         ║
 ║                                                      ║
 ║  Logs written to:                                    ║
-║    C:\\temp\\deribit_bot.log   ← human readable        ║
-║    C:\\temp\\trade_history.csv ← open in Excel         ║
+║    C:\\temp\\deribit_bot.log   ← human readable      ║
+║    C:\\temp\\trade_history.csv ← open in Excel       ║
 ╚══════════════════════════════════════════════════════╝
 """
 
