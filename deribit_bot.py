@@ -30,7 +30,7 @@ CONFIG = {
     "dry_run":            True,     # True = testnet, False = live
     "symbol":             "BTC/USD:BTC",
     "log_dir":            "/home/pi/deribit-bot/logs",  # Change this if needed
-    "lookback_hours":     24,               
+    "lookback_hours":     24,
 }
 
 
