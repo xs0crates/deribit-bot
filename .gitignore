@@ -1,0 +1,7 @@
+Keys.env
+.env
+*.log
+*.csv
+__pycache__/
+btc_futures_bot.py
+btc-bot.service
