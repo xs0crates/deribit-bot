@@ -173,8 +173,6 @@ def get_market_data(exchange) -> dict:
         limit=CONFIG["lookback_hours"] + 2
     )
 
-    # Debug: log the oldest and newest candle so we can verify
-    # the data looks correct
     oldest_candle = candles[0]
     newest_candle = candles[-1]
     price_then    = oldest_candle[4]  # [4] = close price of oldest candle
@@ -196,26 +194,6 @@ def get_market_data(exchange) -> dict:
         "price":      price,
         "change_pct": change_pct,
     }
-
-def get_market_data(exchange) -> dict:
-    ticker = exchange.fetch_ticker(CONFIG["symbol"])
-
-    price = ticker["last"]
-
-    # Deribit doesn't always return "percentage" so we calculate it
-    # ourselves using the 24h opening price
-    # Formula: (current - open) / open * 100
-    open_24h = ticker.get("open")
-    if open_24h and open_24h > 0:
-        change_pct = (price - open_24h) / open_24h * 100
-    else:
-        change_pct = 0.0  # fallback if open price is also missing
-
-    return {
-        "price":      price,
-        "change_pct": change_pct,
-    }
-
 
 # ─────────────────────────────────────────────────────
 #  POSITION HELPERS
