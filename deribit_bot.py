@@ -295,7 +295,7 @@ def run():
 
     log.info("=" * 55)
     log.info("Deribit BTC Futures Bot starting...")
-    log.info(f"   Short trigger : +{CONFIG['short_trigger_pct']}% 24h rise")
+    log.info(f"   Short trigger : +{CONFIG['short_trigger_pct']}% {CONFIG['lookback_hours']}h rise")
     log.info(f"   Take profit   : +{CONFIG['take_profit_pct']}%")
     log.info(f"   Stop loss     : -{CONFIG['stop_loss_pct']}%")
     log.info(f"   Contracts     : {CONFIG['contracts']} (${CONFIG['contracts'] * 10} USD)")
@@ -313,7 +313,7 @@ def run():
 
             log.info(
                 f"BTC: ${price:,.2f} | "
-                f"24h: {change_pct:+.2f}% | "
+                f"{CONFIG['lookback_hours']}h: {change_pct:+.2f}% | "
                 f"Short open: {'YES' if open_position else 'NO'}"
             )
 
