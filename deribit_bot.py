@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 import ccxt
 
 # ─────────────────────────────────────────────────────
-#  YOUR SETTINGS TESTs
+#  YOUR SETTINGS
 # ─────────────────────────────────────────────────────
 CONFIG = {
     "short_trigger_pct":  1.0,
