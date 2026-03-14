@@ -32,7 +32,7 @@ CONFIG = {
     "log_dir":            "/home/pi/deribit-bot/logs",  # Change this if needed
     "lookback_hours":     24,
 }
-
+log = logging.getLogger(__name__)
 
 # ─────────────────────────────────────────────────────
 #  LOGGING SETUP — creates C:\temp if it doesn't exist
