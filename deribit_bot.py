@@ -22,7 +22,7 @@ import ccxt
 #  YOUR SETTINGS TESTs
 # ─────────────────────────────────────────────────────
 CONFIG = {
-    "short_trigger_pct":  -1.8,
+    "short_trigger_pct":  1.0,
     "take_profit_pct":    10.0,
     "stop_loss_pct":      5.0,
     "contracts":          10,       # 1 contract = $10 USD on Deribit BTC perpetual
