@@ -22,7 +22,7 @@ import ccxt
 #  YOUR SETTINGS TESTs
 # ─────────────────────────────────────────────────────
 CONFIG = {
-    "short_trigger_pct":  1.8,
+    "short_trigger_pct":  -1.8,
     "take_profit_pct":    10.0,
     "stop_loss_pct":      5.0,
     "contracts":          10,       # 1 contract = $10 USD on Deribit BTC perpetual
@@ -30,7 +30,7 @@ CONFIG = {
     "dry_run":            True,     # True = testnet, False = live
     "symbol":             "BTC/USD:BTC",
     "log_dir":            "/home/pi/deribit-bot/logs",  # Change this if needed
-    "lookback_hours":     24,
+    "lookback_hours":     6,
 }
 log = logging.getLogger(__name__)
 
@@ -61,8 +61,8 @@ def setup_logging():
     )
 
     log = logging.getLogger(__name__)
-    log.info(f"📁 Activity log : {log_file}")
-    log.info(f"📊 Trade history: {csv_file}")
+    log.info(f"Activity log : {log_file}")
+    log.info(f"Trade history: {csv_file}")
 
     # Write CSV header if the file is new
     if not csv_file.exists():
@@ -226,7 +226,7 @@ def calc_profit_pct(position: dict) -> float:
 def open_short(exchange, log, csv_file, price: float):
     """Opens a short by placing a SELL market order."""
     log.info(
-        f"📉 Opening SHORT — "
+        f"Opening SHORT — "
         f"{CONFIG['contracts']} contracts @ ${price:,.2f} "
         f"(${CONFIG['contracts'] * 10} exposure)"
     )
@@ -238,14 +238,14 @@ def open_short(exchange, log, csv_file, price: float):
             amount=CONFIG["contracts"],
             params={"reduceOnly": False}
         )
-        log.info(f"✅ Short opened! Order ID: {order['id']}")
+        log.info(f"Short OPENED! Order ID: {order['id']}")
         log_trade(csv_file, action="OPEN_SHORT", reason="SIGNAL", price=price)
         return order
 
     except ccxt.InsufficientFunds:
-        log.error("❌ Insufficient funds — add BTC to your testnet account at test.deribit.com")
+        log.error("Insufficient funds — add BTC to your testnet account at test.deribit.com")
     except ccxt.ExchangeError as e:
-        log.error(f"❌ Exchange error opening short: {e}")
+        log.error(f"Exchange error opening short: {e}")
 
     return None
 
@@ -257,7 +257,7 @@ def close_short(exchange, log, csv_file, position: dict, reason: str, price: flo
     profit_pct  = calc_profit_pct(position)
 
     log.info(
-        f"💰 Closing SHORT ({reason}) | "
+        f"Closing SHORT ({reason}) | "
         f"Entry: ${entry_price:,.2f} → Exit: ${price:,.2f} | "
         f"P&L: {profit_pct:+.2f}%"
     )
@@ -270,7 +270,7 @@ def close_short(exchange, log, csv_file, position: dict, reason: str, price: flo
             amount=contracts,
             params={"reduceOnly": True}
         )
-        log.info(f"✅ Short closed! Order ID: {order['id']}")
+        log.info(f"Short CLOSED! Order ID: {order['id']}")
         log_trade(
             csv_file,
             action="CLOSE_SHORT",
@@ -282,7 +282,7 @@ def close_short(exchange, log, csv_file, position: dict, reason: str, price: flo
         return order
 
     except ccxt.ExchangeError as e:
-        log.error(f"❌ Exchange error closing short: {e}")
+        log.error(f"Exchange error closing short: {e}")
 
     return None
 
@@ -294,7 +294,7 @@ def run():
     log, csv_file = setup_logging()
 
     log.info("=" * 55)
-    log.info("🤖 Deribit BTC Futures Bot starting...")
+    log.info("Deribit BTC Futures Bot starting...")
     log.info(f"   Short trigger : +{CONFIG['short_trigger_pct']}% 24h rise")
     log.info(f"   Take profit   : +{CONFIG['take_profit_pct']}%")
     log.info(f"   Stop loss     : -{CONFIG['stop_loss_pct']}%")
@@ -329,11 +329,11 @@ def run():
                 )
 
                 if profit_pct >= CONFIG["take_profit_pct"]:
-                    log.info(f"  └─ 🎯 Take profit triggered! ({profit_pct:+.2f}%)")
+                    log.info(f"  └─ Take profit triggered! ({profit_pct:+.2f}%)")
                     close_short(exchange, log, csv_file, open_position, "TAKE_PROFIT", price)
 
                 elif profit_pct <= -CONFIG["stop_loss_pct"]:
-                    log.info(f"  └─ 🛑 Stop loss triggered! ({profit_pct:+.2f}%)")
+                    log.info(f"  └─ Stop loss triggered! ({profit_pct:+.2f}%)")
                     close_short(exchange, log, csv_file, open_position, "STOP_LOSS", price)
 
                 else:
