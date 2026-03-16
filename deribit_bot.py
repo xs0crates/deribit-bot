@@ -131,7 +131,9 @@ def setup_logging():
 #  CSV WRITER — called every time a trade opens or closes
 # ─────────────────────────────────────────────────────
 def log_trade(csv_file: Path, action: str, reason: str, price: float,
-              entry_price: float = None, profit_pct: float = None):
+              entry_price: float = None, profit_pct: float = None),
+    
+    
     """
     Appends one row to trade_history.csv.
 
@@ -281,6 +283,7 @@ def open_short(exchange, log, csv_file, price: float):
         )
         log.info(f"Short OPENED! Order ID: {order['id']}")
         log_trade(csv_file, action="OPEN_SHORT", reason="SIGNAL", price=price)
+        increment_trade_counter()  
         return order
 
     except ccxt.InsufficientFunds:
@@ -387,8 +390,9 @@ def run():
             # ── Look for entry signal ─────────────────────────
             else:
                 if change_pct >= CONFIG["short_trigger_pct"]:
-                    log.info(f"  └─ 🚨 Entry signal! BTC up {change_pct:+.2f}% in 24h")
-                    open_short(exchange, log, csv_file, price)
+                    log.info(f"  └─ 🚨 Entry signal! BTC up {change_pct:+.2f}% in 6h")
+                    if check_trade_limit():
+                        open_short(exchange, log, csv_file, price)
                 else:
                     needed = CONFIG["short_trigger_pct"] - change_pct
                     log.info(
