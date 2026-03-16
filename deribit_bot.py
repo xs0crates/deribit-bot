@@ -131,7 +131,7 @@ def setup_logging():
 #  CSV WRITER — called every time a trade opens or closes
 # ─────────────────────────────────────────────────────
 def log_trade(csv_file: Path, action: str, reason: str, price: float,
-              entry_price: float = None, profit_pct: float = None),
+              entry_price: float = None, profit_pct: float = None):
     
     
     """
