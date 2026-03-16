@@ -23,7 +23,7 @@ import ccxt
 # ─────────────────────────────────────────────────────
 CONFIG = {
     "short_trigger_pct":  3.0,
-    "take_profit_pct":    50.0,
+    "take_profit_pct":    5.0,
     "stop_loss_pct":      50.0,
     "contracts":          10,
     "check_interval_sec": 60,
