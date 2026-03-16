@@ -22,17 +22,58 @@ import ccxt
 #  YOUR SETTINGS
 # ─────────────────────────────────────────────────────
 CONFIG = {
-    "short_trigger_pct":  1.0,
-    "take_profit_pct":    10.0,
-    "stop_loss_pct":      5.0,
-    "contracts":          10,       # 1 contract = $10 USD on Deribit BTC perpetual
+    "short_trigger_pct":  3.0,
+    "take_profit_pct":    50.0,
+    "stop_loss_pct":      50.0,
+    "contracts":          10,
     "check_interval_sec": 60,
-    "dry_run":            True,     # True = testnet, False = live
+    "dry_run":            True,
     "symbol":             "BTC/USD:BTC",
-    "log_dir":            "/home/pi/deribit-bot/logs",  # Change this if needed
+    "log_dir":            "/home/pi/deribit-bot/logs",
     "lookback_hours":     6,
+    "max_trades_per_day": 10,       # Maximum positions to open per day
 }
 log = logging.getLogger(__name__)
+
+# ─────────────────────────────────────────────────────
+#   DAILY TRADE COUNTER
+# - Limits the amount of positions the bot can open on a daily basis.
+# ─────────────────────────────────────────────────────
+trade_counter = {
+    "date":  None,   # tracks which date the counter belongs to
+    "count": 0,      # how many trades opened today
+}
+
+def check_trade_limit() -> bool:
+    """
+    Returns True if we are allowed to open a new trade today.
+    Resets the counter automatically at midnight.
+    """
+    today = datetime.now().date()
+
+    # If it's a new day, reset the counter
+    if trade_counter["date"] != today:
+        trade_counter["date"]  = today
+        trade_counter["count"] = 0
+        log.info(f"New day — trade counter reset (limit: {CONFIG['max_trades_per_day']})")
+
+    remaining = CONFIG["max_trades_per_day"] - trade_counter["count"]
+
+    if trade_counter["count"] >= CONFIG["max_trades_per_day"]:
+        log.info(
+            f"Daily trade limit reached "
+            f"({trade_counter['count']}/{CONFIG['max_trades_per_day']}) — "
+            f"no new positions until midnight"
+        )
+        return False
+
+    log.info(f"  Trades today: {trade_counter['count']}/{CONFIG['max_trades_per_day']} ({remaining} remaining)")
+    return True
+
+def increment_trade_counter():
+    """Call this every time a new short is successfully opened."""
+    trade_counter["count"] += 1
+    log.info(f"Trade counter: {trade_counter['count']}/{CONFIG['max_trades_per_day']} today")
 
 # ─────────────────────────────────────────────────────
 #  LOGGING SETUP — creates C:\temp if it doesn't exist
