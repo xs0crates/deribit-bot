@@ -30,7 +30,7 @@ CONFIG = {
     "dry_run":            True,
     "symbol":             "BTC/USD:BTC",
     "log_dir":            "/home/pi/deribit-bot/logs",
-    "lookback_hours":     6,
+    "lookback_hours":     12,
     "max_trades_per_day": 10,       # Maximum positions to open per day
 }
 log = logging.getLogger(__name__)
