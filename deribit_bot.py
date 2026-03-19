@@ -1,11 +1,10 @@
-
 """
 ╔══════════════════════════════════════════════════════╗
 ║        Bitcoin Futures Bot — Deribit Edition         ║
 ║                                                      ║
 ║  Logs written to:                                    ║
-║    C:\\temp\\deribit_bot.log   ← human readable      ║
-║    C:\\temp\\trade_history.csv ← open in Excel       ║
+║    C:\\temp\\deribit_bot.log   <- human readable     ║
+║    C:\\temp\\trade_history.csv <- open in Excel      ║
 ╚══════════════════════════════════════════════════════╝
 """
 
@@ -132,8 +131,6 @@ def setup_logging():
 # ─────────────────────────────────────────────────────
 def log_trade(csv_file: Path, action: str, reason: str, price: float,
               entry_price: float = None, profit_pct: float = None):
-    
-    
     """
     Appends one row to trade_history.csv.
 
@@ -195,7 +192,7 @@ def init_exchange(log):
 
     exchange.set_sandbox_mode(CONFIG["dry_run"])
 
-    mode = "TESTNET (test.deribit.com)" if CONFIG["dry_run"] else "⚠️  LIVE (deribit.com)"
+    mode = "TESTNET (test.deribit.com)" if CONFIG["dry_run"] else "LIVE (deribit.com)"
     log.info(f"Connected to Deribit — {mode}")
 
     return exchange
@@ -223,7 +220,7 @@ def get_market_data(exchange) -> dict:
     price_now     = newest_candle[4]  # [4] = close price of newest candle
 
     log.info(
-        f"  📊 Debug — "
+        f"  Debug — "
         f"Price {CONFIG['lookback_hours']}h ago: ${price_then:,.2f} | "
         f"Price now: ${price_now:,.2f}"
     )
@@ -246,11 +243,11 @@ def get_open_short(exchange) -> dict | None:
     """Returns the open short position, or None if there isn't one."""
     positions = exchange.fetch_positions([CONFIG["symbol"]])
 
-    log.info(f"  🔍 Positions returned: {len(positions)}")
+    log.info(f"  Positions returned: {len(positions)}")
     for i, p in enumerate(positions):
         contracts = float(p.get("contracts", 0))
         log.info(
-            f"  🔍 Position {i}: side={p.get('side')} | "
+            f"  Position {i}: side={p.get('side')} | "
             f"contracts={contracts} | symbol={p.get('symbol')}"
         )
 
@@ -299,7 +296,7 @@ def open_short(exchange, log, csv_file, price: float):
         )
         log.info(f"Short OPENED! Order ID: {order['id']}")
         log_trade(csv_file, action="OPEN_SHORT", reason="SIGNAL", price=price)
-        increment_trade_counter()  
+        increment_trade_counter()
         return order
 
     except ccxt.InsufficientFunds:
@@ -318,7 +315,7 @@ def close_short(exchange, log, csv_file, position: dict, reason: str, price: flo
 
     log.info(
         f"Closing SHORT ({reason}) | "
-        f"Entry: ${entry_price:,.2f} → Exit: ${price:,.2f} | "
+        f"Entry: ${entry_price:,.2f} -> Exit: ${price:,.2f} | "
         f"P&L: {profit_pct:+.2f}%"
     )
 
@@ -406,7 +403,7 @@ def run():
             # ── Look for entry signal ─────────────────────────
             else:
                 if change_pct >= CONFIG["short_trigger_pct"]:
-                    log.info(f"  └─ 🚨 Entry signal! BTC up {change_pct:+.2f}% in 6h")
+                    log.info(f"  └─ Entry signal! BTC up {change_pct:+.2f}% in {CONFIG['lookback_hours']}h")
                     if check_trade_limit():
                         open_short(exchange, log, csv_file, price)
                 else:
@@ -418,23 +415,23 @@ def run():
                     )
 
         except ccxt.NetworkError as e:
-            log.warning(f"⚠️  Network error (will retry next cycle): {e}")
+            log.warning(f"Network error (will retry next cycle): {e}")
 
         except ccxt.AuthenticationError as e:
-            log.error(f"🔑 Authentication failed — check your .env file: {e}")
+            log.error(f"Authentication failed — check your .env file: {e}")
             break
 
         except ccxt.ExchangeError as e:
-            log.error(f"❌ Exchange error: {e}")
+            log.error(f"Exchange error: {e}")
 
         except KeyboardInterrupt:
-            log.info("👋 Bot stopped by user (Ctrl+C)")
+            log.info("Bot stopped by user (Ctrl+C)")
             break
 
         except Exception as e:
-            log.exception(f"💥 Unexpected error: {e}")
+            log.exception(f"Unexpected error: {e}")
 
-        log.info(f"  💤 Next check in {CONFIG['check_interval_sec']}s...\n")
+        log.info(f"  Next check in {CONFIG['check_interval_sec']}s...\n")
         time.sleep(CONFIG["check_interval_sec"])
 
 
