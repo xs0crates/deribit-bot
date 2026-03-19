@@ -22,7 +22,7 @@ import ccxt
 #  YOUR SETTINGS
 # ─────────────────────────────────────────────────────
 CONFIG = {
-    "short_trigger_pct":  3.0,
+    "short_trigger_pct":  1.0,
     "take_profit_pct":    5.0,
     "stop_loss_pct":      50.0,
     "contracts":          10,
@@ -30,7 +30,7 @@ CONFIG = {
     "dry_run":            True,
     "symbol":             "BTC/USD:BTC",
     "log_dir":            "/home/pi/deribit-bot/logs",
-    "lookback_hours":     12,
+    "lookback_hours":     1,
     "max_trades_per_day": 10,       # Maximum positions to open per day
 }
 log = logging.getLogger(__name__)
