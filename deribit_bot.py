@@ -23,8 +23,8 @@ import ccxt
 # ─────────────────────────────────────────────────────
 CONFIG = {
     "short_trigger_pct":  1.0,
-    "take_profit_pct":    5.0,
-    "stop_loss_pct":      50.0,
+    "take_profit_pct":    100.0,   # close at 100% ROI
+    "stop_loss_pct":      50.0,    # close if down 50% ROI
     "contracts":          10,
     "check_interval_sec": 60,
     "dry_run":            True,
@@ -263,6 +263,17 @@ def get_open_short(exchange) -> dict | None:
     return None
 
 def calc_profit_pct(position: dict) -> float:
+    """
+    Uses Deribit's actual ROI percentage including leverage.
+    This matches exactly what you see on the Deribit website.
+    Positive = profit, Negative = loss.
+    """
+    roi = position.get("percentage")
+
+    if roi is not None:
+        return float(roi)
+
+    # Fallback to manual BTC price calculation if percentage not available
     entry   = float(position["entryPrice"])
     current = float(position["markPrice"])
     return (entry - current) / entry * 100
