@@ -245,11 +245,16 @@ def get_market_data(exchange) -> dict:
 def get_open_short(exchange) -> dict | None:
     """Returns the open short position, or None if there isn't one."""
     positions = exchange.fetch_positions([CONFIG["symbol"]])
+
+    # Debug — log everything Deribit returns so we can see the format
+    log.info(f"  🔍 Positions returned: {len(positions)}")
+    for i, p in enumerate(positions):
+        log.info(f"  🔍 Position {i}: side={p.get('side')} | contracts={p.get('contracts')} | symbol={p.get('symbol')}")
+
     for p in positions:
         if p["side"] == "short" and float(p.get("contracts", 0)) > 0:
             return p
     return None
-
 
 def calc_profit_pct(position: dict) -> float:
     """
