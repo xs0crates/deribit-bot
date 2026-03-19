@@ -23,8 +23,8 @@ import ccxt
 # ─────────────────────────────────────────────────────
 CONFIG = {
     "short_trigger_pct":  1.0,
-    "take_profit_pct":    100.0,   # close at 100% ROI
-    "stop_loss_pct":      50.0,    # close if down 50% ROI
+    "take_profit_pct":    100.0,   # close at +% ROI
+    "stop_loss_pct":      75.0,    # close if down -% ROI
     "contracts":          10,
     "check_interval_sec": 60,
     "dry_run":            True,
