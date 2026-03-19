@@ -409,12 +409,6 @@ def run():
                     f"P&L: {profit_pct:+.2f}%"
                 )
 
-                log.info(
-                    f"  └─ Entry: ${entry_price:,.2f} | "
-                    f"Mark: ${price:,.2f} | "
-                    f"P&L: {profit_pct:+.2f}%"
-                )
-
                 if profit_pct >= CONFIG["take_profit_pct"]:
                     log.info(f"  └─ Take profit triggered! ({profit_pct:+.2f}%)")
                     close_short(exchange, log, csv_file, open_position, "TAKE_PROFIT", price)
