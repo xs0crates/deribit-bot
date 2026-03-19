@@ -35,6 +35,25 @@ CONFIG = {
 log = logging.getLogger(__name__)
 
 # ─────────────────────────────────────────────────────
+#  TERMINAL COLORS
+# ─────────────────────────────────────────────────────
+def colorize(value: float) -> str:
+    """
+    Returns the P&L value as a colored string for the terminal.
+    Green = positive (profit)
+    Red   = negative (loss)
+    Colors only show in the SSH terminal, not in log files.
+    """
+    GREEN = "\033[92m"
+    RED   = "\033[91m"
+    RESET = "\033[0m"
+
+    if value >= 0:
+        return f"{GREEN}+{value:.2f}%{RESET}"
+    else:
+        return f"{RED}{value:.2f}%{RESET}"
+
+# ─────────────────────────────────────────────────────
 #   DAILY TRADE COUNTER
 # - Limits the amount of positions the bot can open on a daily basis.
 # ─────────────────────────────────────────────────────
@@ -378,6 +397,17 @@ def run():
             if open_position:
                 profit_pct  = calc_profit_pct(open_position)
                 entry_price = float(open_position["entryPrice"])
+
+                print(
+                    f"  └─ Entry: ${entry_price:,.2f} | "
+                    f"Mark: ${price:,.2f} | "
+                    f"P&L: {colorize(profit_pct)}"
+                )
+                log.info(
+                    f"  └─ Entry: ${entry_price:,.2f} | "
+                    f"Mark: ${price:,.2f} | "
+                    f"P&L: {profit_pct:+.2f}%"
+                )
 
                 log.info(
                     f"  └─ Entry: ${entry_price:,.2f} | "
