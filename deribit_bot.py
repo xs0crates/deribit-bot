@@ -246,23 +246,23 @@ def get_open_short(exchange) -> dict | None:
     """Returns the open short position, or None if there isn't one."""
     positions = exchange.fetch_positions([CONFIG["symbol"]])
 
-    # Debug — log everything Deribit returns so we can see the format
     log.info(f"  🔍 Positions returned: {len(positions)}")
     for i, p in enumerate(positions):
-        log.info(f"  🔍 Position {i}: side={p.get('side')} | contracts={p.get('contracts')} | symbol={p.get('symbol')}")
+        contracts = float(p.get("contracts", 0))
+        log.info(
+            f"  🔍 Position {i}: side={p.get('side')} | "
+            f"contracts={contracts} | symbol={p.get('symbol')}"
+        )
 
     for p in positions:
-        if p["side"] == "short" and float(p.get("contracts", 0)) > 0:
+        contracts = float(p.get("contracts", 0))
+        # Deribit uses NEGATIVE numbers for short positions
+        if contracts < 0:
             return p
+
     return None
 
 def calc_profit_pct(position: dict) -> float:
-    """
-    Calculates unrealised P&L for our short.
-    Positive = profit (price fell), Negative = loss (price rose).
-
-    Formula: (entry - current) / entry * 100
-    """
     entry   = float(position["entryPrice"])
     current = float(position["markPrice"])
     return (entry - current) / entry * 100
@@ -301,7 +301,7 @@ def open_short(exchange, log, csv_file, price: float):
 
 def close_short(exchange, log, csv_file, position: dict, reason: str, price: float):
     """Closes our short by placing a BUY market order."""
-    contracts   = float(position["contracts"])
+    contracts   = abs(float(position["contracts"]))
     entry_price = float(position["entryPrice"])
     profit_pct  = calc_profit_pct(position)
 
