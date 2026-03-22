@@ -21,7 +21,7 @@ import ccxt
 #  YOUR SETTINGS
 # ─────────────────────────────────────────────────────
 CONFIG = {
-    "short_trigger_pct":  1.0,
+    "short_trigger_pct":  2.0,
     "take_profit_pct":    100.0,   # close at +% ROI
     "stop_loss_pct":      75.0,    # close if down -% ROI
     "contracts":          10,
