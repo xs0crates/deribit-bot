@@ -281,35 +281,22 @@ def get_open_short(exchange) -> dict | None:
 def calc_profit_pct(position: dict) -> float:
     """
     Calculates true ROI including leverage, matching what Deribit shows.
-    
-    Formula: (entry - mark) / mark * leverage * 100
-    For a short: profit when price falls
+    Uses price movement * leverage as the most accurate method.
     """
-    entry          = float(position.get("entryPrice", 0))
-    current        = float(position.get("markPrice", 0))
-    leverage       = float(position.get("leverage", 1))
-    unrealised     = position.get("unrealizedPnl")
-    initial_margin = position.get("initialMargin")
+    entry    = float(position.get("entryPrice", 0))
+    current  = float(position.get("markPrice", 0))
+    leverage = float(position.get("leverage", 1))
 
     log.info(
         f"  PnL Debug — "
-        f"entry={entry} | mark={current} | "
-        f"leverage={leverage} | "
-        f"unrealizedPnl={unrealised} | "
-        f"initialMargin={initial_margin}"
+        f"entry={entry} | mark={current} | leverage={leverage}"
     )
 
-    # Method 1 — use unrealizedPnl / initialMargin if both available
-    if unrealised is not None and initial_margin and float(initial_margin) > 0:
-        roi = float(unrealised) / float(initial_margin) * 100
-        log.info(f"  PnL Method 1 (unrealised/margin): {roi:+.2f}%")
-        return roi
-
-    # Method 2 — price movement * leverage
+    # Price movement * leverage = true ROI for a short position
     if entry and entry > 0 and current > 0:
         price_change_pct = (entry - current) / entry * 100
         roi = price_change_pct * leverage
-        log.info(f"  PnL Method 2 (price * leverage): {roi:+.2f}%")
+        log.info(f"  PnL calculated: {roi:+.2f}%")
         return roi
 
     return 0.0
