@@ -284,15 +284,30 @@ def calc_profit_pct(position: dict) -> float:
     This matches exactly what you see on the Deribit website.
     Positive = profit, Negative = loss.
     """
-    roi = position.get("percentage")
+    roi          = position.get("percentage")
+    entry        = float(position.get("entryPrice", 0))
+    current      = float(position.get("markPrice", 0))
+    unrealised   = position.get("unrealizedPnl")
+    initial_margin = position.get("initialMargin")
+
+    # Debug — log all available fields so we can see what Deribit returns
+    log.info(
+        f"  PnL Debug — "
+        f"percentage={roi} | "
+        f"entry={entry} | "
+        f"mark={current} | "
+        f"unrealizedPnl={unrealised} | "
+        f"initialMargin={initial_margin}"
+    )
 
     if roi is not None:
         return float(roi)
 
-    # Fallback to manual BTC price calculation if percentage not available
-    entry   = float(position["entryPrice"])
-    current = float(position["markPrice"])
-    return (entry - current) / entry * 100
+    # Fallback
+    if entry and entry > 0:
+        return (entry - current) / entry * 100
+
+    return 0.0
 
 
 # ─────────────────────────────────────────────────────
