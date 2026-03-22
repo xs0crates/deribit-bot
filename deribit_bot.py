@@ -280,32 +280,37 @@ def get_open_short(exchange) -> dict | None:
 
 def calc_profit_pct(position: dict) -> float:
     """
-    Uses Deribit's actual ROI percentage including leverage.
-    This matches exactly what you see on the Deribit website.
-    Positive = profit, Negative = loss.
+    Calculates true ROI including leverage, matching what Deribit shows.
+    
+    Formula: (entry - mark) / mark * leverage * 100
+    For a short: profit when price falls
     """
-    roi          = position.get("percentage")
-    entry        = float(position.get("entryPrice", 0))
-    current      = float(position.get("markPrice", 0))
-    unrealised   = position.get("unrealizedPnl")
+    entry          = float(position.get("entryPrice", 0))
+    current        = float(position.get("markPrice", 0))
+    leverage       = float(position.get("leverage", 1))
+    unrealised     = position.get("unrealizedPnl")
     initial_margin = position.get("initialMargin")
 
-    # Debug — log all available fields so we can see what Deribit returns
     log.info(
         f"  PnL Debug — "
-        f"percentage={roi} | "
-        f"entry={entry} | "
-        f"mark={current} | "
+        f"entry={entry} | mark={current} | "
+        f"leverage={leverage} | "
         f"unrealizedPnl={unrealised} | "
         f"initialMargin={initial_margin}"
     )
 
-    if roi is not None:
-        return float(roi)
+    # Method 1 — use unrealizedPnl / initialMargin if both available
+    if unrealised is not None and initial_margin and float(initial_margin) > 0:
+        roi = float(unrealised) / float(initial_margin) * 100
+        log.info(f"  PnL Method 1 (unrealised/margin): {roi:+.2f}%")
+        return roi
 
-    # Fallback
-    if entry and entry > 0:
-        return (entry - current) / entry * 100
+    # Method 2 — price movement * leverage
+    if entry and entry > 0 and current > 0:
+        price_change_pct = (entry - current) / entry * 100
+        roi = price_change_pct * leverage
+        log.info(f"  PnL Method 2 (price * leverage): {roi:+.2f}%")
+        return roi
 
     return 0.0
 
