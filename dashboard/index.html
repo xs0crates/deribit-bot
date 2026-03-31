@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bot Dashboard Test</title>
+    <style>
+        body { background: #080c10; color: #00d4ff; font-family: monospace; padding: 40px; }
+        .box { background: #0d1318; border: 1px solid #1e2d3d; padding: 20px; margin: 10px 0; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Deribit Bot Dashboard</h1>
+    <div class="box" id="status">Loading status...</div>
+    <div class="box" id="price">Loading price...</div>
+    <div class="box" id="trades">Loading trades...</div>
+
+    <script>
+        async function load() {
+            try {
+                const s = await fetch('/api/status');
+                const sd = await s.json();
+                document.getElementById('status').innerHTML =
+                    `Status: ${sd.status} | Mode: ${sd.mode}`;
+            } catch(e) {
+                document.getElementById('status').innerHTML = 'Error: ' + e.message;
+            }
+
+            try {
+                const p = await fetch('/api/price');
+                const pd = await p.json();
+                document.getElementById('price').innerHTML =
+                    `BTC Price: $${pd.price} | Change: ${pd.change_pct}%`;
+            } catch(e) {
+                document.getElementById('price').innerHTML = 'Error: ' + e.message;
+            }
+
+            try {
+                const t = await fetch('/api/trades');
+                const td = await t.json();
+                document.getElementById('trades').innerHTML =
+                    `Trades: ${td.trades.length} recorded`;
+            } catch(e) {
+                document.getElementById('trades').innerHTML = 'Error: ' + e.message;
+            }
+        }
+        load();
+    </script>
+</body>
+</html>
