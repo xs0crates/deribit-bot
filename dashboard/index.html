@@ -547,15 +547,17 @@
         </div>
  
         <div class="card col-2">
-            <div class="card-label">24h High</div>
-            <div class="card-value" id="high-display" style="font-size:20px;">--</div>
-        </div>
- 
-        <div class="card col-3">
             <div class="card-label">24h Low</div>
             <div class="card-value" id="low-display" style="font-size:20px;">--</div>
         </div>
- 
+
+        <div class="card col-3">
+            <div class="card-label">Total Profit / Loss</div>
+            <div class="card-value" id="profit-usd-display" style="font-size:24px;">--</div>
+            <div class="card-sub" id="profit-roi-display">--</div>
+            <div class="card-sub" id="profit-trades-display">--</div>
+        </div>
+
     </div>
  
     <div class="grid" style="margin-bottom: 16px;">
@@ -796,6 +798,27 @@
             }).join('');
         } catch(e) {}
     }
+
+        async function fetchSummary() {
+        try {
+            const r = await fetch(`${API}/api/summary`);
+            const d = await r.json();
+
+            const isProfit = d.total_usd >= 0;
+            const color    = isProfit ? 'var(--green)' : 'var(--red)';
+            const sign     = isProfit ? '+' : '';
+
+            document.getElementById('profit-usd-display').innerHTML =
+                `<span style="color:${color};font-size:24px;">${sign}$${d.total_usd.toFixed(2)}</span>`;
+
+            document.getElementById('profit-roi-display').innerHTML =
+                `<span style="color:${color};">Avg ROI: ${sign}${d.avg_roi.toFixed(2)}%</span>`;
+
+            document.getElementById('profit-trades-display').innerHTML =
+                `<span style="color:var(--text-dim);">${d.wins}W / ${d.losses}L (${d.trade_count} trades)</span>`;
+
+        } catch(e) {}
+    }
  
     async function fetchAll() {
         await Promise.all([
@@ -805,6 +828,7 @@
             fetchTrades(),
             fetchConfig(),
             fetchLogs(),
+            fetchSummary(),
         ]);
         document.getElementById('last-update').textContent =
             'Updated: ' + new Date().toLocaleTimeString();
