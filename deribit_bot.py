@@ -16,6 +16,7 @@ from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 import ccxt
+import requests
 
 # ─────────────────────────────────────────────────────
 #  YOUR SETTINGS
@@ -52,6 +53,33 @@ def colorize(value: float) -> str:
         return f"{GREEN}+{value:.2f}%{RESET}"
     else:
         return f"{RED}{value:.2f}%{RESET}"
+
+def send_telegram(message: str):
+    """
+    Sends a message to your Telegram chat.
+    Fails silently if Telegram is unavailable so the bot keeps running.
+    """
+    token   = os.getenv("TELEGRAM_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+
+    if not token or not chat_id:
+        log.warning("Telegram credentials not set — skipping notification")
+        return
+
+    try:
+        url  = f"https://api.telegram.org/bot{token}/sendMessage"
+        data = {
+            "chat_id":    chat_id,
+            "text":       message,
+            "parse_mode": "HTML"
+        }
+        response = requests.post(url, data=data, timeout=10)
+        if response.status_code == 200:
+            log.info("Telegram notification sent")
+        else:
+            log.warning(f"Telegram returned status: {response.status_code}")
+    except Exception as e:
+        log.warning(f"Telegram notification failed: {e}")
 
 # ─────────────────────────────────────────────────────
 #   DAILY TRADE COUNTER
@@ -322,6 +350,14 @@ def open_short(exchange, log, csv_file, price: float):
         )
         log.info(f"Short OPENED! Order ID: {order['id']}")
         log_trade(csv_file, action="OPEN_SHORT", reason="SIGNAL", price=price)
+        send_telegram(
+            f"<b>SHORT OPENED</b>\n"
+            f"BTC Price: ${price:,.2f}\n"
+            f"Contracts: {CONFIG['contracts']} (${CONFIG['contracts'] * 10} exposure)\n"
+            f"Trigger: +{CONFIG['short_trigger_pct']}% in {CONFIG['lookback_hours']}h\n"
+            f"Take Profit: +{CONFIG['take_profit_pct']}% ROI\n"
+            f"Stop Loss: -{CONFIG['stop_loss_pct']}% ROI"
+        )
         increment_trade_counter()
         return order
 
@@ -354,6 +390,12 @@ def close_short(exchange, log, csv_file, position: dict, reason: str, price: flo
             params={"reduceOnly": True}
         )
         log.info(f"Short CLOSED! Order ID: {order['id']}")
+        send_telegram(
+            f"<b>SHORT CLOSED — {reason}</b>\n"
+            f"Entry: ${entry_price:,.2f}\n"
+            f"Exit: ${price:,.2f}\n"
+            f"ROI: {profit_pct:+.2f}%"
+        )
         log_trade(
             csv_file,
             action="CLOSE_SHORT",
