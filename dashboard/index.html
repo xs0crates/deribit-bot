@@ -1,48 +1,857 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Bot Dashboard Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deribit Bot Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background: #080c10; color: #00d4ff; font-family: monospace; padding: 40px; }
-        .box { background: #0d1318; border: 1px solid #1e2d3d; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        :root {
+            --bg:         #080c10;
+            --bg2:        #0d1318;
+            --bg3:        #111820;
+            --border:     #1e2d3d;
+            --accent:     #00d4ff;
+            --accent2:    #0099bb;
+            --green:      #00ff9d;
+            --red:        #ff3d6e;
+            --yellow:     #ffd700;
+            --text:       #c8d8e8;
+            --text-dim:   #4a6070;
+            --mono:       'Share Tech Mono', monospace;
+            --sans:       'Rajdhani', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono);
+            font-size: 18px;
+            color: var(--accent);
+            box-shadow: 0 0 20px rgba(0,212,255,0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+            50% { box-shadow: 0 0 40px rgba(0,212,255,0.6); }
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .subtitle {
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .last-update {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        .refresh-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--accent);
+            padding: 8px 16px;
+            font-family: var(--sans);
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(0,212,255,0.1);
+            border-color: var(--accent);
+        }
+
+        /* Grid layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+        }
+
+        .col-3  { grid-column: span 3; }
+        .col-4  { grid-column: span 4; }
+        .col-6  { grid-column: span 6; }
+        .col-8  { grid-column: span 8; }
+        .col-12 { grid-column: span 12; }
+
+        /* Cards */
+        .card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.5;
+        }
+
+        .card:hover {
+            border-color: rgba(0,212,255,0.3);
+        }
+
+        .card-label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-family: var(--mono);
+            font-size: 28px;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 6px;
+            font-family: var(--mono);
+        }
+
+        /* Status indicator */
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        .status-dot.running { background: var(--green); }
+        .status-dot.stopped { background: var(--red); animation: none; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .status-text {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .status-text.running { color: var(--green); }
+        .status-text.stopped { color: var(--red); }
+
+        /* Price display */
+        .price-big {
+            font-family: var(--mono);
+            font-size: 42px;
+            color: var(--text);
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+
+        .price-change {
+            font-family: var(--mono);
+            font-size: 16px;
+            margin-top: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .price-change.positive {
+            color: var(--green);
+            background: rgba(0,255,157,0.1);
+        }
+
+        .price-change.negative {
+            color: var(--red);
+            background: rgba(255,61,110,0.1);
+        }
+
+        /* Position card */
+        .position-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .position-card.has-position {
+            border-color: rgba(0,212,255,0.4);
+        }
+
+        .position-card.has-position::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .no-position {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+            color: var(--text-dim);
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .roi-display {
+            font-family: var(--mono);
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .roi-display.positive { color: var(--green); }
+        .roi-display.negative { color: var(--red); }
+
+        /* Progress bar */
+        .progress-container {
+            margin-top: 16px;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--bg3);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-fill.positive { background: var(--green); }
+        .progress-fill.negative { background: var(--red); }
+
+        /* Position details grid */
+        .pos-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .pos-detail {
+            background: var(--bg3);
+            border-radius: 6px;
+            padding: 10px 14px;
+        }
+
+        .pos-detail-label {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+
+        .pos-detail-value {
+            font-family: var(--mono);
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        /* Trade history table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(30,45,61,0.5);
+            font-family: var(--mono);
+            font-size: 12px;
+        }
+
+        tr:hover td { background: rgba(0,212,255,0.03); }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .badge-open {
+            background: rgba(0,212,255,0.15);
+            color: var(--accent);
+            border: 1px solid rgba(0,212,255,0.3);
+        }
+
+        .badge-close {
+            background: rgba(255,215,0,0.1);
+            color: var(--yellow);
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .badge-tp {
+            background: rgba(0,255,157,0.1);
+            color: var(--green);
+            border: 1px solid rgba(0,255,157,0.3);
+        }
+
+        .badge-sl {
+            background: rgba(255,61,110,0.1);
+            color: var(--red);
+            border: 1px solid rgba(255,61,110,0.3);
+        }
+
+        /* Config panel */
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .config-item {
+            background: var(--bg3);
+            border-radius: 6px;
+            padding: 12px 14px;
+        }
+
+        .config-key {
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+
+        .config-val {
+            font-family: var(--mono);
+            font-size: 14px;
+            color: var(--accent);
+        }
+
+        /* Log viewer */
+        .log-viewer {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 14px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: var(--mono);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .log-line { color: var(--text-dim); }
+        .log-line.info { color: var(--text); }
+        .log-line.error { color: var(--red); }
+        .log-line.warning { color: var(--yellow); }
+
+        /* Section titles */
+        .section-title {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Mode badge */
+        .mode-badge {
+            font-family: var(--mono);
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 3px;
+            letter-spacing: 1px;
+        }
+
+        .mode-testnet {
+            background: rgba(255,215,0,0.1);
+            color: var(--yellow);
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .mode-live {
+            background: rgba(255,61,110,0.1);
+            color: var(--red);
+            border: 1px solid rgba(255,61,110,0.3);
+        }
+
+        /* Loading state */
+        .loading {
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 13px;
+            animation: fadeInOut 1s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
+
+        @media (max-width: 768px) {
+            .col-3, .col-4, .col-6, .col-8 { grid-column: span 12; }
+            .config-grid { grid-template-columns: repeat(2, 1fr); }
+            .pos-details { grid-template-columns: 1fr; }
+            .price-big { font-size: 32px; }
+        }
     </style>
 </head>
 <body>
-    <h1>Deribit Bot Dashboard</h1>
-    <div class="box" id="status">Loading status...</div>
-    <div class="box" id="price">Loading price...</div>
-    <div class="box" id="trades">Loading trades...</div>
+<div class="container">
 
-    <script>
-        async function load() {
-            try {
-                const s = await fetch('/api/status');
-                const sd = await s.json();
-                document.getElementById('status').innerHTML =
-                    `Status: ${sd.status} | Mode: ${sd.mode}`;
-            } catch(e) {
-                document.getElementById('status').innerHTML = 'Error: ' + e.message;
-            }
+    <header>
+        <div class="logo">
+            <div class="logo-icon">B</div>
+            <div>
+                <h1>Deribit Bot</h1>
+                <div class="subtitle">Trading Dashboard</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="last-update" id="last-update">--</span>
+            <button class="refresh-btn" onclick="fetchAll()">Refresh</button>
+        </div>
+    </header>
 
-            try {
-                const p = await fetch('/api/price');
-                const pd = await p.json();
-                document.getElementById('price').innerHTML =
-                    `BTC Price: $${pd.price} | Change: ${pd.change_pct}%`;
-            } catch(e) {
-                document.getElementById('price').innerHTML = 'Error: ' + e.message;
-            }
+    <!-- Row 1: Status, Price, Change -->
+    <div class="grid" style="margin-bottom: 16px;">
 
-            try {
-                const t = await fetch('/api/trades');
-                const td = await t.json();
-                document.getElementById('trades').innerHTML =
-                    `Trades: ${td.trades.length} recorded`;
-            } catch(e) {
-                document.getElementById('trades').innerHTML = 'Error: ' + e.message;
-            }
+        <div class="card col-3">
+            <div class="card-label">Bot Status</div>
+            <div id="status-display" class="loading">Loading...</div>
+            <div class="card-sub" id="mode-display"></div>
+        </div>
+
+        <div class="card col-4">
+            <div class="card-label">BTC Price</div>
+            <div class="price-big" id="price-display">--</div>
+            <div id="change-display" class="price-change" style="margin-top:8px;">--</div>
+        </div>
+
+        <div class="card col-2">
+            <div class="card-label">24h High</div>
+            <div class="card-value" id="high-display" style="font-size:20px;">--</div>
+        </div>
+
+        <div class="card col-3">
+            <div class="card-label">24h Low</div>
+            <div class="card-value" id="low-display" style="font-size:20px;">--</div>
+        </div>
+
+    </div>
+
+    <!-- Row 2: Position + Config -->
+    <div class="grid" style="margin-bottom: 16px;">
+
+        <div class="position-card col-6" id="position-card">
+            <div class="section-title">Open Position</div>
+            <div id="position-display">
+                <div class="no-position loading">Loading...</div>
+            </div>
+        </div>
+
+        <div class="card col-6">
+            <div class="section-title">Configuration</div>
+            <div class="config-grid" id="config-display">
+                <div class="loading">Loading...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Row 3: Trade History -->
+    <div class="grid" style="margin-bottom: 16px;">
+        <div class="card col-12">
+            <div class="section-title">Trade History</div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Action</th>
+                            <th>Reason</th>
+                            <th>BTC Price</th>
+                            <th>Contracts</th>
+                            <th>Exposure</th>
+                            <th>Entry</th>
+                            <th>Exit</th>
+                            <th>ROI</th>
+                            <th>Profit USD</th>
+                            <th>Mode</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trades-body">
+                        <tr><td colspan="12" class="loading" style="text-align:center;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 4: Logs -->
+    <div class="grid">
+        <div class="card col-12">
+            <div class="section-title">Activity Log</div>
+            <div class="log-viewer" id="log-viewer">
+                <div class="loading">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const API = '';  // empty = same host
+
+    async function fetchStatus() {
+        try {
+            const r = await fetch(`${API}/api/status`);
+            const d = await r.json();
+
+            const running = d.running;
+            document.getElementById('status-display').innerHTML = `
+                <span class="status-dot ${running ? 'running' : 'stopped'}"></span>
+                <span class="status-text ${running ? 'running' : 'stopped'}">${d.status}</span>
+            `;
+            document.getElementById('mode-display').innerHTML = `
+                <span class="mode-badge ${d.mode === 'TESTNET' ? 'mode-testnet' : 'mode-live'}">${d.mode}</span>
+            `;
+        } catch(e) {
+            document.getElementById('status-display').innerHTML = '<span style="color:var(--red)">Unreachable</span>';
         }
-        load();
-    </script>
+    }
+
+    async function fetchPrice() {
+        try {
+            const r = await fetch(`${API}/api/price`);
+            const d = await r.json();
+
+            document.getElementById('price-display').textContent = `$${Number(d.price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+            const change = d.change_pct;
+            const changeEl = document.getElementById('change-display');
+            changeEl.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}% (${d.lookback_hours}h)`;
+            changeEl.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
+
+            if (d.high_24h) document.getElementById('high-display').textContent = `$${Number(d.high_24h).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+            if (d.low_24h)  document.getElementById('low-display').textContent  = `$${Number(d.low_24h).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+        } catch(e) {}
+    }
+
+    async function fetchPosition() {
+        try {
+            const r = await fetch(`${API}/api/position`);
+            const d = await r.json();
+            const card = document.getElementById('position-card');
+            const display = document.getElementById('position-display');
+
+            if (!d.open) {
+                card.classList.remove('has-position');
+                display.innerHTML = '<div class="no-position">No Open Position</div>';
+                return;
+            }
+
+            card.classList.add('has-position');
+            const roi = d.roi;
+            const isPos = roi >= 0;
+
+            // Progress toward TP or SL
+            const tp = d.take_profit;
+            const sl = d.stop_loss;
+            let progressPct = 0;
+            if (isPos) {
+                progressPct = Math.min((roi / tp) * 100, 100);
+            } else {
+                progressPct = Math.min((Math.abs(roi) / sl) * 100, 100);
+            }
+
+            display.innerHTML = `
+                <div class="roi-display ${isPos ? 'positive' : 'negative'}">${isPos ? '+' : ''}${roi.toFixed(2)}%</div>
+                <div class="progress-container">
+                    <div class="progress-labels">
+                        <span>${isPos ? 'Profit' : 'Loss'} progress</span>
+                        <span>${isPos ? 'TP: +' + tp + '%' : 'SL: -' + sl + '%'}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${isPos ? 'positive' : 'negative'}" style="width:${progressPct}%"></div>
+                    </div>
+                </div>
+                <div class="pos-details">
+                    <div class="pos-detail">
+                        <div class="pos-detail-label">Entry Price</div>
+                        <div class="pos-detail-value">$${Number(d.entry_price).toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                    </div>
+                    <div class="pos-detail">
+                        <div class="pos-detail-label">Mark Price</div>
+                        <div class="pos-detail-value">$${Number(d.mark_price).toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                    </div>
+                    <div class="pos-detail">
+                        <div class="pos-detail-label">Contracts</div>
+                        <div class="pos-detail-value">${d.contracts}</div>
+                    </div>
+                    <div class="pos-detail">
+                        <div class="pos-detail-label">Leverage</div>
+                        <div class="pos-detail-value">${d.leverage}x</div>
+                    </div>
+                </div>
+            `;
+        } catch(e) {}
+    }
+
+    async function fetchTrades() {
+        try {
+            const r = await fetch(`${API}/api/trades`);
+            const d = await r.json();
+            const tbody = document.getElementById('trades-body');
+
+            if (!d.trades || d.trades.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--text-dim);padding:24px;">No trades yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = d.trades.map(t => {
+                const isOpen   = t.Action === 'OPEN_SHORT';
+                const isTp     = t.Reason === 'TAKE_PROFIT';
+                const isSl     = t.Reason === 'STOP_LOSS';
+                const roi      = t['Profit %'] || '';
+                const isProfit = roi.startsWith('+');
+
+                const actionBadge = isOpen
+                    ? `<span class="badge badge-open">OPEN</span>`
+                    : `<span class="badge badge-close">CLOSE</span>`;
+
+                const reasonBadge = isTp
+                    ? `<span class="badge badge-tp">TAKE PROFIT</span>`
+                    : isSl
+                    ? `<span class="badge badge-sl">STOP LOSS</span>`
+                    : `<span class="badge badge-open">${t.Reason}</span>`;
+
+                const roiColor = isProfit ? 'var(--green)' : roi.startsWith('-') ? 'var(--red)' : 'var(--text)';
+
+                return `<tr>
+                    <td>${t.Date || ''}</td>
+                    <td>${t.Time || ''}</td>
+                    <td>${actionBadge}</td>
+                    <td>${reasonBadge}</td>
+                    <td>$${t['BTC Price (USD)'] || ''}</td>
+                    <td>${t.Contracts || ''}</td>
+                    <td>${t['Exposure (USD)'] || ''}</td>
+                    <td>${t['Entry Price'] ? '$' + t['Entry Price'] : '-'}</td>
+                    <td>${t['Exit Price'] ? '$' + t['Exit Price'] : '-'}</td>
+                    <td style="color:${roiColor};font-weight:600;">${roi || '-'}</td>
+                    <td>${t['Profit USD'] || '-'}</td>
+                    <td>${t.Mode || ''}</td>
+                </tr>`;
+            }).join('');
+        } catch(e) {}
+    }
+
+    async function fetchConfig() {
+        try {
+            const r = await fetch(`${API}/api/config`);
+            const d = await r.json();
+            const labels = {
+                short_trigger_pct:  'Trigger %',
+                take_profit_pct:    'Take Profit',
+                stop_loss_pct:      'Stop Loss',
+                contracts:          'Contracts',
+                check_interval_sec: 'Interval',
+                lookback_hours:     'Lookback',
+                max_trades_per_day: 'Max Trades/Day',
+            };
+
+            document.getElementById('config-display').innerHTML = Object.entries(labels).map(([k, label]) => `
+                <div class="config-item">
+                    <div class="config-key">${label}</div>
+                    <div class="config-val">${formatConfigVal(k, d[k])}</div>
+                </div>
+            `).join('');
+        } catch(e) {}
+    }
+
+    function formatConfigVal(key, val) {
+        if (key === 'short_trigger_pct') return `+${val}%`;
+        if (key === 'take_profit_pct')   return `+${val}%`;
+        if (key === 'stop_loss_pct')     return `-${val}%`;
+        if (key === 'check_interval_sec') return `${val}s`;
+        if (key === 'lookback_hours')    return `${val}h`;
+        return val;
+    }
+
+    async function fetchLogs() {
+        try {
+            const r = await fetch(`${API}/api/logs`);
+            const d = await r.json();
+            const viewer = document.getElementById('log-viewer');
+
+            if (!d.lines || d.lines.length === 0) {
+                viewer.innerHTML = '<div class="log-line">No logs yet</div>';
+                return;
+            }
+
+            viewer.innerHTML = d.lines.map(line => {
+                let cls = 'log-line';
+                if (line.includes('[ERROR]'))   cls += ' error';
+                else if (line.includes('[WARNING]')) cls += ' warning';
+                else if (line.includes('[INFO]'))    cls += ' info';
+                return `<div class="${cls}">${line}</div>`;
+            }).join('');
+        } catch(e) {}
+    }
+
+    async function fetchAll() {
+        await Promise.all([
+            fetchStatus(),
+            fetchPrice(),
+            fetchPosition(),
+            fetchTrades(),
+            fetchConfig(),
+            fetchLogs(),
+        ]);
+        document.getElementById('last-update').textContent =
+            'Updated: ' + new Date().toLocaleTimeString();
+    }
+
+    // Initial load
+    fetchAll();
+
+    // Auto refresh every 30 seconds
+    setInterval(fetchAll, 30000);
+</script>
 </body>
 </html>
