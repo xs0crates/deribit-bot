@@ -195,6 +195,60 @@ def get_config():
     """Returns the current bot configuration."""
     return CONFIG
 
+@app.get("/api/summary")
+def get_summary():
+    """Returns total profit/loss across all closed trades."""
+    csv_file = LOG_DIR / "trade_history.csv"
+
+    if not csv_file.exists():
+        return {"total_usd": 0.0, "trade_count": 0, "wins": 0, "losses": 0}
+
+    total_usd  = 0.0
+    total_roi  = 0.0
+    trade_count = 0
+    wins       = 0
+    losses     = 0
+
+    try:
+        with open(csv_file, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row.get("Action") != "CLOSE_SHORT":
+                    continue
+
+                trade_count += 1
+
+                # Parse USD profit — strip $ sign
+                usd_str = row.get("Profit USD", "").replace("$", "").strip()
+                try:
+                    usd = float(usd_str)
+                    total_usd += usd
+                    if usd >= 0:
+                        wins += 1
+                    else:
+                        losses += 1
+                except ValueError:
+                    pass
+
+                # Parse ROI % — strip % sign and +
+                roi_str = row.get("Profit %", "").replace("%", "").replace("+", "").strip()
+                try:
+                    total_roi += float(roi_str)
+                except ValueError:
+                    pass
+
+    except Exception as e:
+        return {"error": str(e)}
+
+    avg_roi = round(total_roi / trade_count, 2) if trade_count > 0 else 0.0
+
+    return {
+        "total_usd":   round(total_usd, 2),
+        "avg_roi":     avg_roi,
+        "trade_count": trade_count,
+        "wins":        wins,
+        "losses":      losses,
+    }
 
 @app.get("/api/logs")
 def get_logs():
