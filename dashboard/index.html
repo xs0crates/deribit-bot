@@ -16,8 +16,8 @@
             --green:      #00ff9d;
             --red:        #ff3d6e;
             --yellow:     #ffd700;
-            --text:       #c8d8e8;
-            --text-dim:   #4a6070;
+            --text:       #f0f4f8;
+            --text-dim:   #8aaabb;
             --mono:       'Share Tech Mono', monospace;
             --sans:       'Rajdhani', sans-serif;
         }
@@ -32,7 +32,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated grid background */
         body::before {
             content: '';
             position: fixed;
@@ -53,7 +52,6 @@
             padding: 24px;
         }
 
-        /* Header */
         header {
             display: flex;
             align-items: center;
@@ -98,7 +96,7 @@
         }
 
         .subtitle {
-            font-size: 12px;
+            font-size: 13px;
             letter-spacing: 2px;
             color: var(--text-dim);
             text-transform: uppercase;
@@ -112,7 +110,7 @@
 
         .last-update {
             font-family: var(--mono);
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-dim);
         }
 
@@ -122,7 +120,7 @@
             color: var(--accent);
             padding: 8px 16px;
             font-family: var(--sans);
-            font-size: 13px;
+            font-size: 14px;
             letter-spacing: 1px;
             cursor: pointer;
             border-radius: 4px;
@@ -134,7 +132,6 @@
             border-color: var(--accent);
         }
 
-        /* Grid layout */
         .grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
@@ -147,7 +144,6 @@
         .col-8  { grid-column: span 8; }
         .col-12 { grid-column: span 12; }
 
-        /* Cards */
         .card {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -174,7 +170,7 @@
         }
 
         .card-label {
-            font-size: 11px;
+            font-size: 13px;
             letter-spacing: 2px;
             text-transform: uppercase;
             color: var(--text-dim);
@@ -189,13 +185,12 @@
         }
 
         .card-sub {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-dim);
             margin-top: 6px;
             font-family: var(--mono);
         }
 
-        /* Status indicator */
         .status-dot {
             display: inline-block;
             width: 8px;
@@ -222,7 +217,6 @@
         .status-text.running { color: var(--green); }
         .status-text.stopped { color: var(--red); }
 
-        /* Price display */
         .price-big {
             font-family: var(--mono);
             font-size: 42px;
@@ -252,7 +246,6 @@
             background: rgba(255,61,110,0.1);
         }
 
-        /* Position card */
         .position-card {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -280,7 +273,7 @@
             justify-content: center;
             height: 120px;
             color: var(--text-dim);
-            font-size: 13px;
+            font-size: 15px;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
@@ -295,7 +288,6 @@
         .roi-display.positive { color: var(--green); }
         .roi-display.negative { color: var(--red); }
 
-        /* Progress bar */
         .progress-container {
             margin-top: 16px;
         }
@@ -304,7 +296,7 @@
             display: flex;
             justify-content: space-between;
             font-family: var(--mono);
-            font-size: 11px;
+            font-size: 13px;
             color: var(--text-dim);
             margin-bottom: 6px;
         }
@@ -326,7 +318,6 @@
         .progress-fill.positive { background: var(--green); }
         .progress-fill.negative { background: var(--red); }
 
-        /* Position details grid */
         .pos-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -341,7 +332,7 @@
         }
 
         .pos-detail-label {
-            font-size: 10px;
+            font-size: 12px;
             letter-spacing: 2px;
             text-transform: uppercase;
             color: var(--text-dim);
@@ -350,11 +341,10 @@
 
         .pos-detail-value {
             font-family: var(--mono);
-            font-size: 15px;
+            font-size: 16px;
             color: var(--text);
         }
 
-        /* Trade history table */
         .table-container {
             overflow-x: auto;
         }
@@ -368,7 +358,7 @@
         th {
             text-align: left;
             padding: 10px 14px;
-            font-size: 10px;
+            font-size: 12px;
             letter-spacing: 2px;
             text-transform: uppercase;
             color: var(--text-dim);
@@ -380,7 +370,8 @@
             padding: 12px 14px;
             border-bottom: 1px solid rgba(30,45,61,0.5);
             font-family: var(--mono);
-            font-size: 12px;
+            font-size: 13px;
+            color: var(--text);
         }
 
         tr:hover td { background: rgba(0,212,255,0.03); }
@@ -389,7 +380,7 @@
             display: inline-block;
             padding: 3px 8px;
             border-radius: 3px;
-            font-size: 10px;
+            font-size: 11px;
             letter-spacing: 1px;
             font-weight: 600;
         }
@@ -418,7 +409,6 @@
             border: 1px solid rgba(255,61,110,0.3);
         }
 
-        /* Config panel */
         .config-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -432,20 +422,19 @@
         }
 
         .config-key {
-            font-size: 10px;
+            font-size: 12px;
             letter-spacing: 1px;
             text-transform: uppercase;
             color: var(--text-dim);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .config-val {
             font-family: var(--mono);
-            font-size: 14px;
+            font-size: 18px;
             color: var(--accent);
         }
 
-        /* Log viewer */
         .log-viewer {
             background: var(--bg);
             border: 1px solid var(--border);
@@ -454,7 +443,7 @@
             height: 200px;
             overflow-y: auto;
             font-family: var(--mono);
-            font-size: 11px;
+            font-size: 12px;
             line-height: 1.8;
         }
 
@@ -463,9 +452,8 @@
         .log-line.error { color: var(--red); }
         .log-line.warning { color: var(--yellow); }
 
-        /* Section titles */
         .section-title {
-            font-size: 11px;
+            font-size: 14px;
             letter-spacing: 3px;
             text-transform: uppercase;
             color: var(--text-dim);
@@ -482,10 +470,9 @@
             background: var(--border);
         }
 
-        /* Mode badge */
         .mode-badge {
             font-family: var(--mono);
-            font-size: 11px;
+            font-size: 12px;
             padding: 4px 10px;
             border-radius: 3px;
             letter-spacing: 1px;
@@ -503,7 +490,6 @@
             border: 1px solid rgba(255,61,110,0.3);
         }
 
-        /* Loading state */
         .loading {
             color: var(--text-dim);
             font-family: var(--mono);
@@ -516,7 +502,6 @@
             50% { opacity: 1; }
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -547,7 +532,6 @@
         </div>
     </header>
 
-    <!-- Row 1: Status, Price, Change -->
     <div class="grid" style="margin-bottom: 16px;">
 
         <div class="card col-3">
@@ -574,7 +558,6 @@
 
     </div>
 
-    <!-- Row 2: Position + Config -->
     <div class="grid" style="margin-bottom: 16px;">
 
         <div class="position-card col-6" id="position-card">
@@ -593,7 +576,6 @@
 
     </div>
 
-    <!-- Row 3: Trade History -->
     <div class="grid" style="margin-bottom: 16px;">
         <div class="card col-12">
             <div class="section-title">Trade History</div>
@@ -623,7 +605,6 @@
         </div>
     </div>
 
-    <!-- Row 4: Logs -->
     <div class="grid">
         <div class="card col-12">
             <div class="section-title">Activity Log</div>
@@ -636,13 +617,12 @@
 </div>
 
 <script>
-    const API = '';  // empty = same host
+    const API = '';
 
     async function fetchStatus() {
         try {
             const r = await fetch(`${API}/api/status`);
             const d = await r.json();
-
             const running = d.running;
             document.getElementById('status-display').innerHTML = `
                 <span class="status-dot ${running ? 'running' : 'stopped'}"></span>
@@ -660,14 +640,11 @@
         try {
             const r = await fetch(`${API}/api/price`);
             const d = await r.json();
-
             document.getElementById('price-display').textContent = `$${Number(d.price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-
             const change = d.change_pct;
             const changeEl = document.getElementById('change-display');
             changeEl.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}% (${d.lookback_hours}h)`;
             changeEl.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
-
             if (d.high_24h) document.getElementById('high-display').textContent = `$${Number(d.high_24h).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
             if (d.low_24h)  document.getElementById('low-display').textContent  = `$${Number(d.low_24h).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
         } catch(e) {}
@@ -679,18 +656,14 @@
             const d = await r.json();
             const card = document.getElementById('position-card');
             const display = document.getElementById('position-display');
-
             if (!d.open) {
                 card.classList.remove('has-position');
                 display.innerHTML = '<div class="no-position">No Open Position</div>';
                 return;
             }
-
             card.classList.add('has-position');
             const roi = d.roi;
             const isPos = roi >= 0;
-
-            // Progress toward TP or SL
             const tp = d.take_profit;
             const sl = d.stop_loss;
             let progressPct = 0;
@@ -699,7 +672,6 @@
             } else {
                 progressPct = Math.min((Math.abs(roi) / sl) * 100, 100);
             }
-
             display.innerHTML = `
                 <div class="roi-display ${isPos ? 'positive' : 'negative'}">${isPos ? '+' : ''}${roi.toFixed(2)}%</div>
                 <div class="progress-container">
@@ -738,31 +710,25 @@
             const r = await fetch(`${API}/api/trades`);
             const d = await r.json();
             const tbody = document.getElementById('trades-body');
-
             if (!d.trades || d.trades.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--text-dim);padding:24px;">No trades yet</td></tr>';
                 return;
             }
-
             tbody.innerHTML = d.trades.map(t => {
                 const isOpen   = t.Action === 'OPEN_SHORT';
                 const isTp     = t.Reason === 'TAKE_PROFIT';
                 const isSl     = t.Reason === 'STOP_LOSS';
                 const roi      = t['Profit %'] || '';
                 const isProfit = roi.startsWith('+');
-
                 const actionBadge = isOpen
                     ? `<span class="badge badge-open">OPEN</span>`
                     : `<span class="badge badge-close">CLOSE</span>`;
-
                 const reasonBadge = isTp
                     ? `<span class="badge badge-tp">TAKE PROFIT</span>`
                     : isSl
                     ? `<span class="badge badge-sl">STOP LOSS</span>`
                     : `<span class="badge badge-open">${t.Reason}</span>`;
-
                 const roiColor = isProfit ? 'var(--green)' : roi.startsWith('-') ? 'var(--red)' : 'var(--text)';
-
                 return `<tr>
                     <td>${t.Date || ''}</td>
                     <td>${t.Time || ''}</td>
@@ -794,7 +760,6 @@
                 lookback_hours:     'Lookback',
                 max_trades_per_day: 'Max Trades/Day',
             };
-
             document.getElementById('config-display').innerHTML = Object.entries(labels).map(([k, label]) => `
                 <div class="config-item">
                     <div class="config-key">${label}</div>
@@ -818,15 +783,13 @@
             const r = await fetch(`${API}/api/logs`);
             const d = await r.json();
             const viewer = document.getElementById('log-viewer');
-
             if (!d.lines || d.lines.length === 0) {
                 viewer.innerHTML = '<div class="log-line">No logs yet</div>';
                 return;
             }
-
             viewer.innerHTML = d.lines.map(line => {
                 let cls = 'log-line';
-                if (line.includes('[ERROR]'))   cls += ' error';
+                if (line.includes('[ERROR]'))        cls += ' error';
                 else if (line.includes('[WARNING]')) cls += ' warning';
                 else if (line.includes('[INFO]'))    cls += ' info';
                 return `<div class="${cls}">${line}</div>`;
@@ -847,10 +810,7 @@
             'Updated: ' + new Date().toLocaleTimeString();
     }
 
-    // Initial load
     fetchAll();
-
-    // Auto refresh every 30 seconds
     setInterval(fetchAll, 30000);
 </script>
 </body>
