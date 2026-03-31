@@ -545,11 +545,6 @@
             <div class="price-big" id="price-display">--</div>
             <div id="change-display" class="price-change" style="margin-top:8px;">--</div>
         </div>
- 
-        <div class="card col-2">
-            <div class="card-label">24h Low</div>
-            <div class="card-value" id="low-display" style="font-size:20px;">--</div>
-        </div>
 
         <div class="card col-3">
             <div class="card-label">Total Profit / Loss</div>
@@ -648,7 +643,6 @@
             changeEl.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}% (${d.lookback_hours}h)`;
             changeEl.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
             if (d.high_24h) document.getElementById('high-display').textContent = `$${Number(d.high_24h).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
-            if (d.low_24h)  document.getElementById('low-display').textContent  = `$${Number(d.low_24h).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
         } catch(e) {}
     }
  
