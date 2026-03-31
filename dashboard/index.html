@@ -21,9 +21,9 @@
             --mono:       'Share Tech Mono', monospace;
             --sans:       'Rajdhani', sans-serif;
         }
-
+ 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
+ 
         body {
             background: var(--bg);
             color: var(--text);
@@ -31,7 +31,7 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-
+ 
         body::before {
             content: '';
             position: fixed;
@@ -43,7 +43,7 @@
             pointer-events: none;
             z-index: 0;
         }
-
+ 
         .container {
             position: relative;
             z-index: 1;
@@ -51,7 +51,7 @@
             margin: 0 auto;
             padding: 24px;
         }
-
+ 
         header {
             display: flex;
             align-items: center;
@@ -60,13 +60,13 @@
             padding-bottom: 20px;
             border-bottom: 1px solid var(--border);
         }
-
+ 
         .logo {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
+ 
         .logo-icon {
             width: 40px;
             height: 40px;
@@ -81,12 +81,12 @@
             box-shadow: 0 0 20px rgba(0,212,255,0.3);
             animation: pulse 2s ease-in-out infinite;
         }
-
+ 
         @keyframes pulse {
             0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
             50% { box-shadow: 0 0 40px rgba(0,212,255,0.6); }
         }
-
+ 
         h1 {
             font-size: 24px;
             font-weight: 700;
@@ -94,26 +94,26 @@
             text-transform: uppercase;
             color: var(--accent);
         }
-
+ 
         .subtitle {
             font-size: 13px;
             letter-spacing: 2px;
             color: var(--text-dim);
             text-transform: uppercase;
         }
-
+ 
         .header-right {
             display: flex;
             align-items: center;
             gap: 16px;
         }
-
+ 
         .last-update {
             font-family: var(--mono);
             font-size: 12px;
             color: var(--text-dim);
         }
-
+ 
         .refresh-btn {
             background: transparent;
             border: 1px solid var(--border);
@@ -126,24 +126,24 @@
             border-radius: 4px;
             transition: all 0.2s;
         }
-
+ 
         .refresh-btn:hover {
             background: rgba(0,212,255,0.1);
             border-color: var(--accent);
         }
-
+ 
         .grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             gap: 16px;
         }
-
+ 
         .col-3  { grid-column: span 3; }
         .col-4  { grid-column: span 4; }
         .col-6  { grid-column: span 6; }
         .col-8  { grid-column: span 8; }
         .col-12 { grid-column: span 12; }
-
+ 
         .card {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -153,7 +153,7 @@
             overflow: hidden;
             transition: border-color 0.3s;
         }
-
+ 
         .card::before {
             content: '';
             position: absolute;
@@ -164,11 +164,11 @@
             background: linear-gradient(90deg, transparent, var(--accent), transparent);
             opacity: 0.5;
         }
-
+ 
         .card:hover {
             border-color: rgba(0,212,255,0.3);
         }
-
+ 
         .card-label {
             font-size: 13px;
             letter-spacing: 2px;
@@ -176,21 +176,21 @@
             color: var(--text-dim);
             margin-bottom: 8px;
         }
-
+ 
         .card-value {
             font-family: var(--mono);
             font-size: 28px;
             color: var(--text);
             line-height: 1;
         }
-
+ 
         .card-sub {
             font-size: 13px;
             color: var(--text-dim);
             margin-top: 6px;
             font-family: var(--mono);
         }
-
+ 
         .status-dot {
             display: inline-block;
             width: 8px;
@@ -199,24 +199,24 @@
             margin-right: 8px;
             animation: blink 1.5s ease-in-out infinite;
         }
-
+ 
         .status-dot.running { background: var(--green); }
         .status-dot.stopped { background: var(--red); animation: none; }
-
+ 
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
-
+ 
         .status-text {
             font-size: 18px;
             font-weight: 600;
             letter-spacing: 2px;
         }
-
+ 
         .status-text.running { color: var(--green); }
         .status-text.stopped { color: var(--red); }
-
+ 
         .price-big {
             font-family: var(--mono);
             font-size: 42px;
@@ -224,7 +224,7 @@
             line-height: 1;
             letter-spacing: -1px;
         }
-
+ 
         .price-change {
             font-family: var(--mono);
             font-size: 16px;
@@ -235,17 +235,17 @@
             padding: 4px 10px;
             border-radius: 4px;
         }
-
+ 
         .price-change.positive {
             color: var(--green);
             background: rgba(0,255,157,0.1);
         }
-
+ 
         .price-change.negative {
             color: var(--red);
             background: rgba(255,61,110,0.1);
         }
-
+ 
         .position-card {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -254,11 +254,11 @@
             position: relative;
             overflow: hidden;
         }
-
+ 
         .position-card.has-position {
             border-color: rgba(0,212,255,0.4);
         }
-
+ 
         .position-card.has-position::before {
             content: '';
             position: absolute;
@@ -266,7 +266,7 @@
             height: 2px;
             background: var(--accent);
         }
-
+ 
         .no-position {
             display: flex;
             align-items: center;
@@ -277,21 +277,21 @@
             letter-spacing: 2px;
             text-transform: uppercase;
         }
-
+ 
         .roi-display {
             font-family: var(--mono);
             font-size: 48px;
             font-weight: 700;
             line-height: 1;
         }
-
+ 
         .roi-display.positive { color: var(--green); }
         .roi-display.negative { color: var(--red); }
-
+ 
         .progress-container {
             margin-top: 16px;
         }
-
+ 
         .progress-labels {
             display: flex;
             justify-content: space-between;
@@ -300,7 +300,7 @@
             color: var(--text-dim);
             margin-bottom: 6px;
         }
-
+ 
         .progress-bar {
             height: 6px;
             background: var(--bg3);
@@ -308,29 +308,29 @@
             overflow: hidden;
             position: relative;
         }
-
+ 
         .progress-fill {
             height: 100%;
             border-radius: 3px;
             transition: width 0.5s ease;
         }
-
+ 
         .progress-fill.positive { background: var(--green); }
         .progress-fill.negative { background: var(--red); }
-
+ 
         .pos-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-top: 16px;
         }
-
+ 
         .pos-detail {
             background: var(--bg3);
             border-radius: 6px;
             padding: 10px 14px;
         }
-
+ 
         .pos-detail-label {
             font-size: 12px;
             letter-spacing: 2px;
@@ -338,23 +338,23 @@
             color: var(--text-dim);
             margin-bottom: 4px;
         }
-
+ 
         .pos-detail-value {
             font-family: var(--mono);
             font-size: 16px;
             color: var(--text);
         }
-
+ 
         .table-container {
             overflow-x: auto;
         }
-
+ 
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
         }
-
+ 
         th {
             text-align: left;
             padding: 10px 14px;
@@ -365,7 +365,7 @@
             border-bottom: 1px solid var(--border);
             font-weight: 500;
         }
-
+ 
         td {
             padding: 12px 14px;
             border-bottom: 1px solid rgba(30,45,61,0.5);
@@ -373,9 +373,9 @@
             font-size: 13px;
             color: var(--text);
         }
-
+ 
         tr:hover td { background: rgba(0,212,255,0.03); }
-
+ 
         .badge {
             display: inline-block;
             padding: 3px 8px;
@@ -384,43 +384,43 @@
             letter-spacing: 1px;
             font-weight: 600;
         }
-
+ 
         .badge-open {
             background: rgba(0,212,255,0.15);
             color: var(--accent);
             border: 1px solid rgba(0,212,255,0.3);
         }
-
+ 
         .badge-close {
             background: rgba(255,215,0,0.1);
             color: var(--yellow);
             border: 1px solid rgba(255,215,0,0.3);
         }
-
+ 
         .badge-tp {
             background: rgba(0,255,157,0.1);
             color: var(--green);
             border: 1px solid rgba(0,255,157,0.3);
         }
-
+ 
         .badge-sl {
             background: rgba(255,61,110,0.1);
             color: var(--red);
             border: 1px solid rgba(255,61,110,0.3);
         }
-
+ 
         .config-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
         }
-
+ 
         .config-item {
             background: var(--bg3);
             border-radius: 6px;
             padding: 12px 14px;
         }
-
+ 
         .config-key {
             font-size: 12px;
             letter-spacing: 1px;
@@ -428,13 +428,13 @@
             color: var(--text-dim);
             margin-bottom: 6px;
         }
-
+ 
         .config-val {
             font-family: var(--mono);
             font-size: 18px;
             color: var(--accent);
         }
-
+ 
         .log-viewer {
             background: var(--bg);
             border: 1px solid var(--border);
@@ -446,12 +446,12 @@
             font-size: 12px;
             line-height: 1.8;
         }
-
+ 
         .log-line { color: var(--text-dim); }
         .log-line.info { color: var(--text); }
         .log-line.error { color: var(--red); }
         .log-line.warning { color: var(--yellow); }
-
+ 
         .section-title {
             font-size: 14px;
             letter-spacing: 3px;
@@ -462,14 +462,14 @@
             align-items: center;
             gap: 10px;
         }
-
+ 
         .section-title::after {
             content: '';
             flex: 1;
             height: 1px;
             background: var(--border);
         }
-
+ 
         .mode-badge {
             font-family: var(--mono);
             font-size: 12px;
@@ -477,36 +477,36 @@
             border-radius: 3px;
             letter-spacing: 1px;
         }
-
+ 
         .mode-testnet {
             background: rgba(255,215,0,0.1);
             color: var(--yellow);
             border: 1px solid rgba(255,215,0,0.3);
         }
-
+ 
         .mode-live {
             background: rgba(255,61,110,0.1);
             color: var(--red);
             border: 1px solid rgba(255,61,110,0.3);
         }
-
+ 
         .loading {
             color: var(--text-dim);
             font-family: var(--mono);
             font-size: 13px;
             animation: fadeInOut 1s ease-in-out infinite;
         }
-
+ 
         @keyframes fadeInOut {
             0%, 100% { opacity: 0.3; }
             50% { opacity: 1; }
         }
-
+ 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
-
+ 
         @media (max-width: 768px) {
             .col-3, .col-4, .col-6, .col-8 { grid-column: span 12; }
             .config-grid { grid-template-columns: repeat(2, 1fr); }
@@ -517,7 +517,7 @@
 </head>
 <body>
 <div class="container">
-
+ 
     <header>
         <div class="logo">
             <div class="logo-icon">B</div>
@@ -531,51 +531,51 @@
             <button class="refresh-btn" onclick="fetchAll()">Refresh</button>
         </div>
     </header>
-
+ 
     <div class="grid" style="margin-bottom: 16px;">
-
+ 
         <div class="card col-3">
             <div class="card-label">Bot Status</div>
             <div id="status-display" class="loading">Loading...</div>
             <div class="card-sub" id="mode-display"></div>
         </div>
-
+ 
         <div class="card col-4">
             <div class="card-label">BTC Price</div>
             <div class="price-big" id="price-display">--</div>
             <div id="change-display" class="price-change" style="margin-top:8px;">--</div>
         </div>
-
+ 
         <div class="card col-2">
             <div class="card-label">24h High</div>
             <div class="card-value" id="high-display" style="font-size:20px;">--</div>
         </div>
-
+ 
         <div class="card col-3">
             <div class="card-label">24h Low</div>
             <div class="card-value" id="low-display" style="font-size:20px;">--</div>
         </div>
-
+ 
     </div>
-
+ 
     <div class="grid" style="margin-bottom: 16px;">
-
+ 
         <div class="position-card col-6" id="position-card">
             <div class="section-title">Open Position</div>
             <div id="position-display">
                 <div class="no-position loading">Loading...</div>
             </div>
         </div>
-
+ 
         <div class="card col-6">
             <div class="section-title">Configuration</div>
             <div class="config-grid" id="config-display">
                 <div class="loading">Loading...</div>
             </div>
         </div>
-
+ 
     </div>
-
+ 
     <div class="grid" style="margin-bottom: 16px;">
         <div class="card col-12">
             <div class="section-title">Trade History</div>
@@ -604,7 +604,7 @@
             </div>
         </div>
     </div>
-
+ 
     <div class="grid">
         <div class="card col-12">
             <div class="section-title">Activity Log</div>
@@ -613,12 +613,12 @@
             </div>
         </div>
     </div>
-
+ 
 </div>
-
+ 
 <script>
     const API = '';
-
+ 
     async function fetchStatus() {
         try {
             const r = await fetch(`${API}/api/status`);
@@ -635,7 +635,7 @@
             document.getElementById('status-display').innerHTML = '<span style="color:var(--red)">Unreachable</span>';
         }
     }
-
+ 
     async function fetchPrice() {
         try {
             const r = await fetch(`${API}/api/price`);
@@ -649,7 +649,7 @@
             if (d.low_24h)  document.getElementById('low-display').textContent  = `$${Number(d.low_24h).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
         } catch(e) {}
     }
-
+ 
     async function fetchPosition() {
         try {
             const r = await fetch(`${API}/api/position`);
@@ -704,7 +704,7 @@
             `;
         } catch(e) {}
     }
-
+ 
     async function fetchTrades() {
         try {
             const r = await fetch(`${API}/api/trades`);
@@ -746,7 +746,7 @@
             }).join('');
         } catch(e) {}
     }
-
+ 
     async function fetchConfig() {
         try {
             const r = await fetch(`${API}/api/config`);
@@ -768,7 +768,7 @@
             `).join('');
         } catch(e) {}
     }
-
+ 
     function formatConfigVal(key, val) {
         if (key === 'short_trigger_pct') return `+${val}%`;
         if (key === 'take_profit_pct')   return `+${val}%`;
@@ -777,7 +777,7 @@
         if (key === 'lookback_hours')    return `${val}h`;
         return val;
     }
-
+ 
     async function fetchLogs() {
         try {
             const r = await fetch(`${API}/api/logs`);
@@ -796,7 +796,7 @@
             }).join('');
         } catch(e) {}
     }
-
+ 
     async function fetchAll() {
         await Promise.all([
             fetchStatus(),
@@ -809,7 +809,7 @@
         document.getElementById('last-update').textContent =
             'Updated: ' + new Date().toLocaleTimeString();
     }
-
+ 
     fetchAll();
     setInterval(fetchAll, 30000);
 </script>
