@@ -22,7 +22,7 @@ import requests
 #  YOUR SETTINGS
 # ─────────────────────────────────────────────────────
 CONFIG = {
-    "short_trigger_pct":  2.0,
+    "short_trigger_pct":  1.8,
     "take_profit_pct":    100.0,   # close at +% ROI
     "stop_loss_pct":      90.0,    # close if down -% ROI
     "contracts":          10,
