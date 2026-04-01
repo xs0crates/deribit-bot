@@ -22,9 +22,9 @@ import requests
 #  YOUR SETTINGS
 # ─────────────────────────────────────────────────────
 CONFIG = {
-    "short_trigger_pct":  1.8,
+    "short_trigger_pct":  1.3,
     "take_profit_pct":    100.0,   # close at +% ROI
-    "stop_loss_pct":      90.0,    # close if down -% ROI
+    "stop_loss_pct":      50.0,    # close if down -% ROI
     "trailing_stop_pct":  20.0,    # trail by this % behind peak ROI
     "contracts":          10,
     "check_interval_sec": 60,
