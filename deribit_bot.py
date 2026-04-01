@@ -25,6 +25,7 @@ CONFIG = {
     "short_trigger_pct":  1.8,
     "take_profit_pct":    100.0,   # close at +% ROI
     "stop_loss_pct":      90.0,    # close if down -% ROI
+    "trailing_stop_pct":  20.0,    # trail by this % behind peak ROI
     "contracts":          10,
     "check_interval_sec": 60,
     "dry_run":            True,
@@ -120,6 +121,31 @@ def increment_trade_counter():
     """Call this every time a new short is successfully opened."""
     trade_counter["count"] += 1
     log.info(f"Trade counter: {trade_counter['count']}/{CONFIG['max_trades_per_day']} today")
+
+# ─────────────────────────────────────────────────────
+#  TRAILING STOP TRACKER
+# - Tracks the highest ROI seen for the current position
+# ─────────────────────────────────────────────────────
+trailing = {
+    "peak_roi": 0.0,   # highest ROI seen since position opened
+}
+
+def reset_trailing():
+    """Reset the trailing stop when a position is closed or opened."""
+    trailing["peak_roi"] = 0.0
+    log.info("Trailing stop reset")
+
+def update_trailing(roi: float) -> float:
+    """
+    Updates the peak ROI and returns the current trailing stop level.
+    Only trails upward — never moves the stop down.
+    """
+    if roi > trailing["peak_roi"]:
+        trailing["peak_roi"] = roi
+        log.info(f"  New peak ROI: {roi:+.2f}% — trailing stop now at {roi - CONFIG['trailing_stop_pct']:+.2f}%")
+
+    trailing_stop_level = trailing["peak_roi"] - CONFIG["trailing_stop_pct"]
+    return trailing_stop_level
 
 # ─────────────────────────────────────────────────────
 #  LOGGING SETUP — creates C:\temp if it doesn't exist
@@ -350,6 +376,8 @@ def open_short(exchange, log, csv_file, price: float):
         )
         log.info(f"Short OPENED! Order ID: {order['id']}")
         log_trade(csv_file, action="OPEN_SHORT", reason="SIGNAL", price=price)
+        increment_trade_counter()
+        reset_trailing()
         send_telegram(
             f"<b>SHORT OPENED</b>\n"
             f"BTC Price: ${price:,.2f}\n"
@@ -442,10 +470,10 @@ def run():
                 f"Short open: {'YES' if open_position else 'NO'}"
             )
 
-            # ── Manage open position ──────────────────────────
             if open_position:
-                profit_pct  = calc_profit_pct(open_position)
-                entry_price = float(open_position["entryPrice"])
+                profit_pct    = calc_profit_pct(open_position)
+                entry_price   = float(open_position["entryPrice"])
+                trailing_stop = update_trailing(profit_pct)
 
                 print(
                     f"  └─ Entry: ${entry_price:,.2f} | "
@@ -455,22 +483,40 @@ def run():
                 log.info(
                     f"  └─ Entry: ${entry_price:,.2f} | "
                     f"Mark: ${price:,.2f} | "
-                    f"P&L: {profit_pct:+.2f}%"
+                    f"P&L: {profit_pct:+.2f}% | "
+                    f"Peak: {trailing['peak_roi']:+.2f}% | "
+                    f"Trailing stop: {trailing_stop:+.2f}%"
                 )
 
+                # Take profit — hit the target
                 if profit_pct >= CONFIG["take_profit_pct"]:
                     log.info(f"  └─ Take profit triggered! ({profit_pct:+.2f}%)")
                     close_short(exchange, log, csv_file, open_position, "TAKE_PROFIT", price)
+                    reset_trailing()
 
+                # Hard stop loss — price went against us from entry
                 elif profit_pct <= -CONFIG["stop_loss_pct"]:
-                    log.info(f"  └─ Stop loss triggered! ({profit_pct:+.2f}%)")
+                    log.info(f"  └─ Hard stop loss triggered! ({profit_pct:+.2f}%)")
                     close_short(exchange, log, csv_file, open_position, "STOP_LOSS", price)
+                    reset_trailing()
+
+                # Trailing stop — we had profit but it fell back
+                elif trailing["peak_roi"] >= CONFIG["trailing_stop_pct"] and profit_pct <= trailing_stop:
+                    log.info(
+                        f"  └─ Trailing stop triggered! "
+                        f"Peak: {trailing['peak_roi']:+.2f}% | "
+                        f"Current: {profit_pct:+.2f}% | "
+                        f"Stop level: {trailing_stop:+.2f}%"
+                    )
+                    close_short(exchange, log, csv_file, open_position, "TRAILING_STOP", price)
+                    reset_trailing()
 
                 else:
                     log.info(
-                        f"  └─ Holding position "
-                        f"(TP: +{CONFIG['take_profit_pct']}% | "
-                        f"SL: -{CONFIG['stop_loss_pct']}%)"
+                        f"  └─ Holding | "
+                        f"TP: +{CONFIG['take_profit_pct']}% | "
+                        f"Hard SL: -{CONFIG['stop_loss_pct']}% | "
+                        f"Trailing SL: {trailing_stop:+.2f}%"
                     )
 
             # ── Look for entry signal ─────────────────────────
