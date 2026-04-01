@@ -660,11 +660,14 @@
             card.classList.add('has-position');
             const roi = d.roi;
             const isPos = roi >= 0;
-            const tp = d.take_profit;
-            const sl = d.stop_loss;
-            let progressPct = 0;
+            const tp  = d.take_profit;
+            const sl  = d.stop_loss;
+            const tsp = d.trailing_stop_pct || 20;
+            let progressPct  = 0;
+            let trailingPct  = 0;
             if (isPos) {
                 progressPct = Math.min((roi / tp) * 100, 100);
+                trailingPct = Math.min((roi / tp) * 100, 100);
             } else {
                 progressPct = Math.min((Math.abs(roi) / sl) * 100, 100);
             }
@@ -678,6 +681,16 @@
                     <div class="progress-bar">
                         <div class="progress-fill ${isPos ? 'positive' : 'negative'}" style="width:${progressPct}%"></div>
                     </div>
+                </div>
+                <div class="progress-container" style="margin-top:10px;">
+                    <div class="progress-labels">
+                        <span>Trailing stop</span>
+                        <span style="color:var(--yellow);">Trail: ${d.trailing_stop_pct}% behind peak</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:${trailingPct}%;background:var(--yellow);"></div>
+                    </div>
+                </div>
                 </div>
                 <div class="pos-details">
                     <div class="pos-detail">
@@ -695,6 +708,14 @@
                     <div class="pos-detail">
                         <div class="pos-detail-label">Leverage</div>
                         <div class="pos-detail-value">${d.leverage}x</div>
+                    </div>
+                    <div class="pos-detail">
+                        <div class="pos-detail-label">Hard Stop Loss</div>
+                        <div class="pos-detail-value" style="color:var(--red);">-${sl}%</div>
+                    </div>
+                    <div class="pos-detail">
+                        <div class="pos-detail-label">Trailing Stop</div>
+                        <div class="pos-detail-value" style="color:var(--yellow);">${tsp}% behind peak</div>
                     </div>
                 </div>
             `;

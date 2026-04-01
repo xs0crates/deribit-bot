@@ -152,14 +152,15 @@ def get_position():
                     roi = 0.0
 
                 return {
-                    "open":         True,
-                    "contracts":    abs(contracts),
-                    "entry_price":  entry,
-                    "mark_price":   mark,
-                    "leverage":     leverage,
-                    "roi":          round(roi, 2),
-                    "take_profit":  CONFIG["take_profit_pct"],
-                    "stop_loss":    CONFIG["stop_loss_pct"],
+                    "open":             True,
+                    "contracts":        abs(contracts),
+                    "entry_price":      entry,
+                    "mark_price":       mark,
+                    "leverage":         leverage,
+                    "roi":              round(roi, 2),
+                    "take_profit":      CONFIG["take_profit_pct"],
+                    "stop_loss":        CONFIG["stop_loss_pct"],
+                    "trailing_stop_pct": CONFIG.get("trailing_stop_pct", 20.0),
                 }
 
         return {"open": False}
